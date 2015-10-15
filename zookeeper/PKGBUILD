@@ -5,9 +5,9 @@
 # Contributor: Guillaume ALAUX <guillaume at alaux dot net>
 pkgname=zookeeper
 pkgver=3.4.6
-pkgrel=8
+pkgrel=9
 pkgdesc='Open-source server which enables highly reliable distributed coordination'
-arch=('any')
+arch=('i686' 'x86_64')
 url='https://zookeeper.apache.org/'
 license=('Apache')
 makedepends=('python2' 'python2-setuptools')
