@@ -2,7 +2,7 @@
 
 _pkgname=openio-sds
 pkgname=$_pkgname-git
-pkgver=v0.8.3.r70.ge5bdbc0
+pkgver=v0.8.3.r73.ga6f843f
 pkgrel=1
 arch=('i686' 'x86_64')
 pkgdesc=('OpenIO software defined storage (latest git)')
@@ -27,6 +27,7 @@ build() {
 	cd $_pkgname 
 	cmake -DCMAKE_INSTALL_PREFIX=/usr \
 	      -DLD_LIBDIR=lib \
+		  -DCMAKE_BUILD_TYPE="Debug" \
 	      .
 	make
 }
