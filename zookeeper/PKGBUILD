@@ -5,12 +5,13 @@
 # Contributor: Guillaume ALAUX <guillaume at alaux dot net>
 pkgname=zookeeper
 pkgver=3.4.6
-pkgrel=7
+pkgrel=8
 pkgdesc='Open-source server which enables highly reliable distributed coordination'
 arch=('any')
 url='https://zookeeper.apache.org/'
 license=('Apache')
-depends=('java-runtime' 'python2')
+makedepends=('python2' 'python2-setuptools')
+depends=('java-runtime' 'python2' 'systemd')
 backup=(etc/zookeeper/configuration.xsl
         etc/zookeeper/log4j.properties
         etc/zookeeper/zoo.cfg)
@@ -44,7 +45,7 @@ build() {
   popd
 
   pushd src/contrib/zkpython
-  python src/python/setup.py build_ext -L "$PWD/../../c/.libs"
+  python2 src/python/setup.py build_ext -L "$PWD/../../c/.libs"
   popd
 }
 
