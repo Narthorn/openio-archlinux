@@ -1,0 +1,33 @@
+# Maintainer: Narthorn <narthorn@gmail.com>
+
+_pkgname=librain
+pkgname=openio-sds-$_pkgname-git
+pkgver=v0.9.1.r0.g08cf6f3
+pkgrel=2
+arch=('i686' 'x86_64')
+pkgdesc=('Rain library for OpenIO SDS solution (latest git)')
+url='https://github.com/open-io/librain'
+license=('MIT')
+makedepends=('git' 'cmake' 'jerasure')
+provides=("$_pkgname")
+conflicts=("$_pkgname")
+source=('git://github.com/open-io/librain.git')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd $_pkgname
+	git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cd $_pkgname
+	cmake -DCMAKE_INSTALL_PREFIX=/usr \
+	      -DLD_LIBDIR=lib \
+	      .
+	make
+}
+
+package() {
+	cd $_pkgname
+	make DESTDIR="$pkgdir" install
+}

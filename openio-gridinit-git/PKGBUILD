@@ -1,0 +1,56 @@
+# Maintainer: Narthorn <narthorn@gmail.com>
+
+_pkgname=gridinit
+pkgname=openio-$_pkgname-git
+pkgver=v1.4.r13.g6a79f5e
+pkgrel=2
+arch=('i686' 'x86_64')
+pkgdesc=('OpenIO gridinit daemon (latest git)')
+url="https://github.com/open-io/$_pkgname"
+license=('AGPL3')
+makedepends=('git' 'cmake' 'glib2' 'libevent')
+depends=('glib2' 'libevent')
+provides=("$_pkgname" "openio-$_pkgname")
+conflicts=("$_pkgname" "openio-$_pkgname")
+backup=("etc/$_pkgname/$_pkgname.conf")
+source=("git://github.com/open-io/$_pkgname.git"
+        "$_pkgname.systemd"
+        "openio-$_pkgname.tmpfiles"
+        "openio-$_pkgname-logrotate.conf")
+sha256sums=('SKIP'
+            'd6f4b4803f79bd620b624bfb61f3ee7dd3e0d3e981b568d4c75c4bb18d459b90'
+            '58ecb84ad44f6a8afaf5c2b23620a846db2f5697b51881791e7441eb920c0cc6'
+            'a6bfdbd1cc1bb238971d66fd42d3b5724b50eabf4706b4ede10ce12143c59899')
+
+pkgver() {
+	cd $_pkgname 
+	git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cd $_pkgname
+	cmake -DCMAKE_INSTALL_PREFIX=/usr \
+	      -DLD_LIBDIR=lib \
+	      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+	      -DGRIDINIT_SOCKET_PATH="/run/$_pkgname/$_pkgname.sock" \
+	      .
+	make
+}
+
+package() {
+	cd $_pkgname
+	make DESTDIR="$pkgdir" install
+
+	# Default config file
+	install -Dm644 "$_pkgname.conf.default" "$pkgdir/etc/$_pkgname/$_pkgname.conf"
+
+	# Systemd unit file
+	install -Dm644 "$srcdir/$_pkgname.systemd" "$pkgdir/usr/lib/systemd/system/$_pkgname.service"
+
+	# tmpfiles
+	install -Dm644 "$srcdir/openio-$_pkgname.tmpfiles" "$pkgdir/usr/lib/tmpfiles.d/$_pkgname.conf"
+	install -d "$pkgdir/run/$_pkgname"
+
+	# logrotate configuration
+	install -Dm644 "$srcdir/openio-$_pkgname-logrotate.conf" "$pkgdir/etc/logrotate.d/$_pkgname.conf"
+}

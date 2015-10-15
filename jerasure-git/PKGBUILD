@@ -1,0 +1,39 @@
+# Maintainer: Narthorn <narthorn@gmail.com>
+# Contributor: Mingkai Dong <mingkaidong@gmail.com>
+
+_pkgname=jerasure
+pkgname=$_pkgname-git
+pkgver=r74.414c96e
+pkgrel=1
+pkgdesc='C implementation of Reed-Solomon coding'
+arch=('i686' 'x86_64')
+url='http://lab.jerasure.org/jerasure/jerasure'
+license=('custom')
+makedepends=('git')
+depends=('gf-complete')
+provides=("$_pkgname")
+conflicts=("$_pkgname")
+source=('git+http://lab.jerasure.org/jerasure/jerasure.git')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/$_pkgname"
+	printf 'r%s.%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd "$srcdir/$_pkgname"
+	autoreconf -vi
+	./configure --prefix=/usr
+	make
+}
+
+package() {
+	cd "$srcdir/$_pkgname"
+	make DESTDIR="$pkgdir" install
+
+	# fix include schizophrenia
+	mv "$pkgdir/usr/include/jerasure.h" "$pkgdir/usr/include/jerasure/jerasure.h"
+
+	install -Dm644 COPYING $pkgdir/usr/share/licenses/$pkgname/COPYING
+}

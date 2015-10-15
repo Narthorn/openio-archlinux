@@ -1,0 +1,38 @@
+# Maintainer: Narthorn <narthorn@gmail.com>
+
+_pkgname=openio-sds
+pkgname=$_pkgname-git
+pkgver=v0.8.3.r68.g5048121
+pkgrel=1
+arch=('i686' 'x86_64')
+pkgdesc=('OpenIO software defined storage (latest git)')
+url='https://github.com/open-io/oio-sds'
+license=('AGPL3', 'LGPL3')
+makedepends=('git' 'cmake' 'python2' 'glib2' 'apache' 'json-c' 'openio-gridinit' 'zeromq' 'zookeeper')
+depends=('openio-asn1c' 'openio-gridinit' 'glib2' 'zookeeper'
+         'python2' 'python2-requests' 'python2-flask' 'python2-pyxattr' 'python2-pyzmq' 'python2-redis'
+         'python2-eventlet' 'python2-gunicorn')
+provides=("$_pkgname")
+conflicts=("$_pkgname")
+source=("$_pkgname::git://github.com/open-io/oio-sds.git")
+sha256sums=('SKIP')
+
+pkgver() {
+	cd $_pkgname 
+	git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cd $_pkgname 
+	cmake -DCMAKE_INSTALL_PREFIX=/usr \
+	      -DLD_LIBDIR=lib \
+	      .
+	make
+}
+
+package() {
+	cd $_pkgname
+	make DESTDIR="$pkgdir" install
+	cd python
+	python2 setup.py install --root="$pkgdir/"
+}
