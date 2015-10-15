@@ -3,16 +3,17 @@
 _pkgname=openio-sds
 pkgname=$_pkgname-git
 pkgver=v0.8.3.r73.ga6f843f
-pkgrel=1
+pkgrel=2
 arch=('i686' 'x86_64')
 pkgdesc=('OpenIO software defined storage (latest git)')
 url='https://github.com/open-io/oio-sds'
 license=('AGPL3', 'LGPL3')
-makedepends=('git' 'cmake' 'glib2' 'apache' 'json-c' 'openio-gridinit' 'zeromq' 'zookeeper'
-             'python2' 'python2-setuptools')
-depends=('procps' 'json-c' 'openio-asn1c' 'openio-gridinit' 'glib2' 'zookeeper'
+makedepends=('git' 'cmake' 'python2-setuptools')
+depends=('glib2' 'json-c' 'openio-asn1c' 'openio-gridinit' 'zookeeper' 'zeromq'
+         'apache' 'mime-types'
          'python2' 'python2-requests' 'python2-flask' 'python2-pyxattr' 'python2-pyzmq' 'python2-redis'
          'python2-eventlet' 'python2-gunicorn')
+optdepends=('procps: for oio-reset.sh init script')
 provides=("$_pkgname")
 conflicts=("$_pkgname")
 source=("$_pkgname::git://github.com/open-io/oio-sds.git")
